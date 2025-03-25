@@ -96,10 +96,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   child: Container(
                     width: isLargeScreen ? width * 0.6 : width * 0.9,
                     decoration: BoxDecoration(
-                      image: const DecorationImage(
-                        image: AssetImage("assets/images/bg_image_details.jpeg"),
-                        fit: BoxFit.cover,
-                      ),
+                      image: const DecorationImage(image: AssetImage("assets/images/bg_image_details.jpeg"), fit: BoxFit.cover,),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Card(

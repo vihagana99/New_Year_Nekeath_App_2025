@@ -114,7 +114,7 @@ class CountdownCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: Card(
-        elevation: 4,
+        elevation: 5,
         color: const Color.fromARGB(255, 231, 219, 167),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
@@ -126,7 +126,7 @@ class CountdownCard extends StatelessWidget {
               Text(
                 value.toString().padLeft(2, '0'),
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.redAccent,
                 ),
