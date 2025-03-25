@@ -18,7 +18,8 @@ dependencies:
   provider: ^6.0.5
   flutter_compass: ^0.8.1
   flutter_map: ^7.0.2
-  flutter_local_notifications: ^9.0.0
+  flutter_local_notifications: ^12.0.0
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1 # Use the latest version
@@ -32,7 +33,7 @@ flutter_launcher_icons:
   web: true
   windows: true
   macos: true
-  image_path: "assets/images/logo1.jpeg" # Your icon file path
+  image_path: "assets/images/logo1.jpeg"
 
 flutter:
   uses-material-design: true

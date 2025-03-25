@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import 'package:permission_handler/permission_handler.dart'; // Import permission handler
+import 'package:permission_handler/permission_handler.dart';
 import '/models/event_model.dart';
+import '/models/notifications.dart'; // Import notification service
 
 class DetailsScreen extends StatefulWidget {
   final Event event;
@@ -20,31 +21,27 @@ class _DetailsScreenState extends State<DetailsScreen> {
   void initState() {
     super.initState();
     updateCountdown();
-    requestPermission(); // Request location permission before starting compass
+    requestPermission();
+    NotificationService.scheduleNotification(widget.event.title, widget.event.countdownDuration);
   }
 
-  // Request location permission
   void requestPermission() async {
     var status = await Permission.location.request();
     if (status.isGranted) {
-      // Start compass once the permission is granted
       _startCompass();
     } else {
-      // Optionally, show a dialog to explain why the permission is needed
       showPermissionDeniedDialog();
     }
   }
 
-  // Start compass after permission is granted
   void _startCompass() {
     FlutterCompass.events!.listen((CompassEvent event) {
       setState(() {
-        _direction = event.heading; // Update direction based on compass data
+        _direction = event.heading;
       });
     });
   }
 
-  // Countdown logic to update event countdown
   void updateCountdown() {
     setState(() {
       countdown = widget.event.countdownDuration;
@@ -52,15 +49,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
     Future.delayed(const Duration(seconds: 1), updateCountdown);
   }
 
-  // Show dialog if permission is denied
   void showPermissionDeniedDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Permission Denied'),
-          content: const Text(
-              'Location permission is required to access the compass.'),
+          content: const Text('Location permission is required to access the compass.'),
           actions: <Widget>[
             TextButton(
               child: const Text('OK'),
@@ -102,8 +97,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     width: isLargeScreen ? width * 0.6 : width * 0.9,
                     decoration: BoxDecoration(
                       image: const DecorationImage(
-                        image:
-                            AssetImage("assets/images/bg_image_details.jpeg"),
+                        image: AssetImage("assets/images/bg_image_details.jpeg"),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(20),
@@ -140,23 +134,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CountdownCard(
-                                    label: "Days", value: countdown.inDays),
-                                CountdownCard(
-                                    label: "Hours",
-                                    value: countdown.inHours % 24),
-                                CountdownCard(
-                                    label: "Minutes",
-                                    value: countdown.inMinutes % 60),
-                                CountdownCard(
-                                    label: "Seconds",
-                                    value: countdown.inSeconds % 60),
+                                CountdownCard(label: "Days", value: countdown.inDays),
+                                CountdownCard(label: "Hours", value: countdown.inHours % 24),
+                                CountdownCard(label: "Minutes", value: countdown.inMinutes % 60),
+                                CountdownCard(label: "Seconds", value: countdown.inSeconds % 60),
                               ],
                             ),
                             const SizedBox(height: 20),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Text(
                                 widget.event.description,
                                 textAlign: TextAlign.center,
@@ -171,13 +157,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             _direction == null
                                 ? const CircularProgressIndicator()
                                 : Transform.rotate(
-                                    angle: (_direction ?? 0) * (3.14159 / 180),
-                                    child: Image.asset(
-                                      "assets/images/compass_arrow.png",
-                                      width: height * 0.25,
-                                      height: height * 0.25,
-                                    ),
-                                  ),
+                              angle: (_direction ?? 0) * (3.14159 / 180),
+                              child: Image.asset(
+                                "assets/images/compass_arrow.png",
+                                width: height * 0.25,
+                                height: height * 0.25,
+                              ),
+                            ),
                             const SizedBox(height: 20),
                             TextButton(
                               onPressed: () {
@@ -187,8 +173,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 padding: EdgeInsets.symmetric(
                                     vertical: 14.0,
                                     horizontal: isLargeScreen ? 40.0 : 20.0),
-                                backgroundColor:
-                                    const Color.fromARGB(255, 142, 87, 252),
+                                backgroundColor: const Color.fromARGB(255, 142, 87, 252),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -217,6 +202,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 }
 
+// CountdownCard class definition
 class CountdownCard extends StatelessWidget {
   final String label;
   final int value;

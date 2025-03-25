@@ -2,12 +2,13 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.sensor.compass" android:required="true"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
 
     <application
         android:label="New_Year_Nekeath_App_2025"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/logo1">
         <activity
             android:name=".MainActivity"
             android:exported="true"
