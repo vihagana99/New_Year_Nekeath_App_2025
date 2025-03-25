@@ -46,8 +46,9 @@ class _EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
       elevation: 5,
+      color: Color.fromARGB(0, 0, 0, 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -59,10 +60,13 @@ class _EventCardState extends State<EventCard> {
           children: [
             Text(
               widget.event.title,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 20,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10), // Add space between title and countdown
+            const SizedBox(height: 20), // Add space between title and countdown
             // Countdown Row with spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -110,7 +114,7 @@ class CountdownCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: Card(
         elevation: 5,
-        color: Colors.deepPurple.shade100,
+        color: Color.fromARGB(255, 231, 219, 167),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),

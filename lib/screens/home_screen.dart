@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import '/models/event_model.dart';
 import '/screens/about_screen.dart';
-import '/screens/details_screen.dart'; // Add this import
+import '/screens/details_screen.dart';
 import '/widgets/event_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,8 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(155, 255, 230, 2),
         title: const Text(
-          "සිංහල අලුත් අවුරුදු නැකත් සීට්ටුව",
+          "අලුත් අවුරුදු නැකත් සීට්ටුව",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -53,26 +55,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: events.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to DetailsScreen when an event is tapped
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            DetailsScreen(event: events[index]),
-                      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              "assets/images/bg_image_home.jpeg",
+              fit: BoxFit.cover,
+            ),
+          ),
+          events.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DetailsScreen(event: events[index]),
+                          ),
+                        );
+                      },
+                      child: EventCard(event: events[index]),
                     );
                   },
-                  child: EventCard(event: events[index]),
-                );
-              },
-            ),
+                ),
+        ],
+      ),
     );
   }
 }
