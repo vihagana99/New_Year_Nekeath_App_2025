@@ -114,7 +114,7 @@ class CountdownCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: Card(
-        elevation: 5,
+        elevation: 4,
         color: const Color.fromARGB(255, 231, 219, 167),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'package:permission_handler/permission_handler.dart'; // Import permission handler
 import '/models/event_model.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -19,9 +20,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
   void initState() {
     super.initState();
     updateCountdown();
-    _startCompass();
+    requestPermission(); // Request location permission before starting compass
   }
 
+  // Request location permission
+  void requestPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      // Start compass once the permission is granted
+      _startCompass();
+    } else {
+      // Optionally, show a dialog to explain why the permission is needed
+      showPermissionDeniedDialog();
+    }
+  }
+
+  // Start compass after permission is granted
+  void _startCompass() {
+    FlutterCompass.events!.listen((CompassEvent event) {
+      setState(() {
+        _direction = event.heading; // Update direction based on compass data
+      });
+    });
+  }
+
+  // Countdown logic to update event countdown
   void updateCountdown() {
     setState(() {
       countdown = widget.event.countdownDuration;
@@ -29,12 +52,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
     Future.delayed(const Duration(seconds: 1), updateCountdown);
   }
 
-  void _startCompass() {
-    FlutterCompass.events!.listen((CompassEvent event) {
-      setState(() {
-        _direction = event.heading;
-      });
-    });
+  // Show dialog if permission is denied
+  void showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permission Denied'),
+          content: const Text(
+              'Location permission is required to access the compass.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -47,7 +84,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
           bool isLargeScreen = width > 600;
 
           return SingleChildScrollView(
-            // Make the entire content scrollable
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -138,8 +174,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     angle: (_direction ?? 0) * (3.14159 / 180),
                                     child: Image.asset(
                                       "assets/images/compass_arrow.png",
-                                      width: height * 0.3,
-                                      height: height * 0.3,
+                                      width: height * 0.25,
+                                      height: height * 0.25,
                                     ),
                                   ),
                             const SizedBox(height: 20),

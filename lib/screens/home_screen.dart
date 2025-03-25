@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
 import '/models/event_model.dart';
 import '/screens/about_screen.dart';
 import '/screens/details_screen.dart';
@@ -20,6 +21,49 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     loadEvents();
+    checkAndRequestPermission(); // Request permission as soon as the home screen is loaded
+  }
+
+  // Check and request location permission
+  Future<void> checkAndRequestPermission() async {
+    var status = await Permission.location.status;
+    if (status.isGranted) {
+      print("Location permission granted");
+    } else if (status.isDenied) {
+      var requestStatus = await Permission.location.request();
+      if (requestStatus.isGranted) {
+        print("Location permission granted");
+      } else {
+        print("Location permission denied");
+        // Optionally, you can show a dialog explaining why the permission is needed
+        showPermissionDeniedDialog();
+      }
+    } else if (status.isPermanentlyDenied) {
+      print("Location permission permanently denied");
+      // Open app settings to manually enable permission
+      openAppSettings();
+    }
+  }
+
+  void showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permission Denied'),
+          content: const Text(
+              'Location permission is required to access certain features. Please allow it in the app settings.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> loadEvents() async {
