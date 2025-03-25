@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color.fromARGB(155, 255, 230, 2),
+        backgroundColor: const Color.fromARGB(155, 255, 230, 2),
         title: const Text(
           "අලුත් අවුරුදු නැකත් සීට්ටුව",
           style: TextStyle(
@@ -49,40 +49,54 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AboutScreen()),
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
               );
             },
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              "assets/images/bg_image_home.jpeg",
-              fit: BoxFit.cover,
-            ),
-          ),
-          events.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                DetailsScreen(event: events[index]),
-                          ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double width = constraints.maxWidth;
+          bool isLargeScreen = width > 600;
+
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  "assets/images/bg_image_home.jpeg",
+                  fit: BoxFit.cover,
+                ),
+              ),
+              events.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: isLargeScreen ? 3 : 1,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: isLargeScreen ? 1.5 : 2.5,
+                      ),
+                      itemCount: events.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailsScreen(event: events[index]),
+                              ),
+                            );
+                          },
+                          child: EventCard(event: events[index]),
                         );
                       },
-                      child: EventCard(event: events[index]),
-                    );
-                  },
-                ),
-        ],
+                    ),
+            ],
+          );
+        },
       ),
     );
   }

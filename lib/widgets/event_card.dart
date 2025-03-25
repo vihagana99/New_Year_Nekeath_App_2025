@@ -33,10 +33,6 @@ class _EventCardState extends State<EventCard> {
     });
   }
 
-  String _formatDuration(Duration duration) {
-    return "${duration.inDays}d ${duration.inHours % 24}h ${duration.inMinutes % 60}m ${duration.inSeconds % 60}s";
-  }
-
   @override
   void dispose() {
     _timer.cancel(); // Cancel the timer when the widget is disposed
@@ -45,55 +41,60 @@ class _EventCardState extends State<EventCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-      elevation: 5,
-      color: Color.fromARGB(0, 0, 0, 0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(15),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              widget.event.title,
-              style: const TextStyle(
-                  fontSize: 20,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20), // Add space between title and countdown
-            // Countdown Row with spacing
-            Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double imageSize = constraints.maxWidth > 600 ? 120 : 90;
+        double fontSize = constraints.maxWidth > 600 ? 24 : 20;
+
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+          elevation: 5,
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(15),
+            title: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CountdownCard(label: "Days", value: _countdown.inDays),
-                const SizedBox(width: 10), // Space between countdown cards
-                CountdownCard(label: "Hours", value: _countdown.inHours % 24),
-                const SizedBox(width: 10), // Space between countdown cards
-                CountdownCard(
-                    label: "Minutes", value: _countdown.inMinutes % 60),
-                const SizedBox(width: 10), // Space between countdown cards
-                CountdownCard(
-                    label: "Seconds", value: _countdown.inSeconds % 60),
+                Text(
+                  widget.event.title,
+                  style: TextStyle(
+                      fontSize: fontSize,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 6,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    CountdownCard(label: "Days", value: _countdown.inDays),
+                    CountdownCard(
+                        label: "Hours", value: _countdown.inHours % 24),
+                    CountdownCard(
+                        label: "Minutes", value: _countdown.inMinutes % 60),
+                    CountdownCard(
+                        label: "Seconds", value: _countdown.inSeconds % 60),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.asset(
-            widget.event.image,
-            width: 90,
-            height: 90,
-            fit: BoxFit.cover,
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                widget.event.image,
+                width: imageSize,
+                height: imageSize,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -114,23 +115,22 @@ class CountdownCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: Card(
         elevation: 5,
-        color: Color.fromARGB(255, 231, 219, 167),
+        color: const Color.fromARGB(255, 231, 219, 167),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+          padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 1.0),
           child: Column(
             children: [
               Text(
                 value.toString().padLeft(2, '0'),
                 style: const TextStyle(
-                  fontSize: 20, // Increase font size for better readability
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.redAccent,
                 ),
               ),
-              const SizedBox(height: 0),
               Text(
                 label,
                 style: TextStyle(

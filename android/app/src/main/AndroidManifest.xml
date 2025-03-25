@@ -1,6 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="true"/>
+
+
     <application
-        android:label="new_year_project_2025"
+        android:label="New_Year_Nekeath_App_20255"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
