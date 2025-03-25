@@ -20,9 +20,18 @@ dependencies:
   flutter_local_notifications: ^9.0.0
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1 # Use the latest version
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  web: true
+  windows: true
+  macos: true
+  image_path: "assets/images/logo1.jpeg" # Your icon file path
 
 flutter:
   uses-material-design: true
