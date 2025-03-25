@@ -6,12 +6,14 @@ class Event {
   final String description;
   final String image;
   final DateTime targetDate;
+  final bool compassRequired; // ✅ Add new property
 
   Event({
     required this.title,
     required this.description,
     required this.image,
     required this.targetDate,
+    required this.compassRequired, // ✅ Constructor update
   });
 
   // JSON එකෙන් Object එකක් හදාගන්න method එක
@@ -21,6 +23,7 @@ class Event {
       description: json['description'],
       image: json['image'],
       targetDate: DateTime.parse(json['targetDate']),
+      compassRequired: json['compassRequired'] ?? false, // ✅ Handle missing value
     );
   }
 

@@ -54,7 +54,7 @@ class _EventCardState extends State<EventCard> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.all(15),
+            contentPadding: const EdgeInsets.all(5),
             title: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,7 +120,7 @@ class CountdownCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 1.0),
+          padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 1.0),
           child: Column(
             children: [
               Text(
