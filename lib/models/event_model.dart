@@ -6,14 +6,14 @@ class Event {
   final String description;
   final String image;
   final DateTime targetDate;
-  final bool compassRequired; // ✅ Add new property
+  final bool compassRequired;
 
   Event({
     required this.title,
     required this.description,
     required this.image,
     required this.targetDate,
-    required this.compassRequired, // ✅ Constructor update
+    required this.compassRequired,
   });
 
   // JSON එකෙන් Object එකක් හදාගන්න method එක
@@ -23,11 +23,10 @@ class Event {
       description: json['description'],
       image: json['image'],
       targetDate: DateTime.parse(json['targetDate']),
-      compassRequired: json['compassRequired'] ?? false, // ✅ Handle missing value
+      compassRequired: json['compassRequired'] ?? false,
     );
   }
 
-  // List එකක් JSON වලට Convert කරන්න
   static Future<List<Event>> loadEvents() async {
     final String response = await rootBundle.loadString('assets/events.json');
     final List<dynamic> data = json.decode(response);

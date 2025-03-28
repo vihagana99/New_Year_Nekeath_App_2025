@@ -67,7 +67,7 @@ class _EventCardState extends State<EventCard> {
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Wrap(
                   spacing: 6,
                   alignment: WrapAlignment.center,
