@@ -115,29 +115,29 @@ class _HomeScreenState extends State<HomeScreen> {
               events.isEmpty
                   ? const Center(child: CircularProgressIndicator())
                   : GridView.builder(
-                      padding: const EdgeInsets.all(8.0),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isLargeScreen ? 3 : 1,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: isLargeScreen ? 1.5 : 2.5,
-                      ),
-                      itemCount: events.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailsScreen(event: events[index]),
-                              ),
-                            );
-                          },
-                          child: EventCard(event: events[index]),
-                        );
-                      },
-                    ),
+                padding: const EdgeInsets.all(8.0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: isLargeScreen ? 3 : 1,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: isLargeScreen ? 1.5 : 2.5,
+                ),
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetailsScreen(event: events[index]),
+                        ),
+                      );
+                    },
+                    child: EventCard(event: events[index]),
+                  );
+                },
+              ),
             ],
           );
         },
