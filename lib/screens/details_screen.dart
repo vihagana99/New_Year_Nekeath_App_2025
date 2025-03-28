@@ -17,6 +17,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Duration countdown = const Duration();
   double? _direction;
   Timer? _timer;
+  StreamSubscription<CompassEvent>? _compassSubscription;
 
   @override
   void initState() {
@@ -33,6 +34,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
     var status = await Permission.location.request();
     if (status.isGranted) {
       _startCompass();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings(); // Open settings if permanently denied
     } else {
       showPermissionDeniedDialog();
     }
@@ -40,7 +43,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   // Start the Compass
   void _startCompass() {
-    FlutterCompass.events!.listen((CompassEvent event) {
+    _compassSubscription = FlutterCompass.events?.listen((CompassEvent? event) {
+      if (event == null) return;
       setState(() {
         _direction = event.heading;
       });
@@ -54,16 +58,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
       if (countdown.inSeconds <= 0) {
-        setState(() {
-          countdown = const Duration(seconds: 0); // Stop at 00:00:00
-        });
-        timer.cancel(); // Cancel the timer when countdown hits zero
-      } else {
-        setState(() {
-          countdown -= const Duration(seconds: 1);
-        });
+        timer.cancel();
+        return;
       }
+      setState(() {
+        countdown -= const Duration(seconds: 1);
+      });
     });
   }
 
@@ -89,6 +91,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    _compassSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -106,11 +115,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(  // Add border here
-                      color: Colors.black,  // Set your desired border color
-                      width: 2,  // Set the width of the border
+                    border: Border.all(
+                      color: Colors.black, // Border color
+                      width: 2, // Border width
                     ),
-                    color: Colors.white.withOpacity(0.1),  // slightly opaque white
+                    color: Colors.white.withOpacity(0.1), // Slightly opaque white
                   ),
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -120,8 +129,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         borderRadius: BorderRadius.circular(15),
                         child: Image.asset(
                           widget.event.image,
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          height: MediaQuery.of(context).size.height * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          height: MediaQuery.of(context).size.height * 0.2,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -163,7 +172,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         _direction == null
                             ? const CircularProgressIndicator()
                             : Transform.rotate(
-                          angle: ((_direction ?? 0) + 0) * (3.14159 / 180), // Rotate to correct direction
+                          angle: ((_direction ?? 0) * (3.14159 / 180)), // Convert to radians
                           child: Image.asset(
                             "assets/images/compass_arrow.png",
                             width: MediaQuery.of(context).size.height * 0.25,

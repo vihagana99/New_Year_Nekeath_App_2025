@@ -3,7 +3,7 @@
     "title": "නව සඳ බැලීම",
     "description": "අභිනව චන්ද්\u200Dර වර්ෂය සඳහා මාර්තු මස 30 වන ඉරිදා දින ද අභිනව සුර්ය වර්ෂය සදහා මැයි මස 01 වන බ්\u200Dරහස්පතින්දා දින ද, නව සඳ බැලීම මැනවි",
     "image": "assets/images/nawa_sada.png",
-    "targetDate": "2025-02-20T00:00:00",
+    "targetDate": "2025-03-30T19:00:00",
     "compassRequired": false
   },
   {
@@ -30,7 +30,7 @@
   {
     "title": "ආහාර පිසීම",
     "description": "අප්\u200Dරේල් මස 14 වැනි සදුදා පුර්වභාග 04.04 ට තඹ වර්ණ වස්ත්\u200Dරාවරණයෙන් සැරසී දකුණු දිශාව බලා ලිප් බැඳ ගිනි මොළවා කිරිබතක් ද කැවිලි වර්ගයක් ද දී කිරි සහ විලඳ ද  පිළිවෙල කර ගැනීම මැනවි.",
-    "image": "assets/images/awurudu_udawa.png",
+    "image": "assets/images/kiri_ithirima.png",
     "targetDate": "2025-04-14T04:04:00",
     "compassRequired": true
   },
