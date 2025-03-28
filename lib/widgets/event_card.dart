@@ -44,7 +44,7 @@ class _EventCardState extends State<EventCard> {
     return LayoutBuilder(
       builder: (context, constraints) {
         double imageSize = constraints.maxWidth > 600 ? 120 : 90;
-        double fontSize = constraints.maxWidth > 600 ? 24 : 20;
+        double fontSize = constraints.maxWidth > 600 ? 22 : 18;
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),

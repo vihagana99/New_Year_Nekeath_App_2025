@@ -30,7 +30,7 @@ class NotificationService {
 
       // Ensure the notification time is not in the past
       if (tzNotificationTime.isBefore(tz.TZDateTime.now(tz.local))) {
-        tzNotificationTime = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 1)); // Default to 1 minute if the time is in the past
+        tzNotificationTime = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 2)); // Default to 1 minute if the time is in the past
       }
 
       await _notificationsPlugin.zonedSchedule(
