@@ -28,6 +28,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     }
   }
 
+  // Request Location Permission
   void requestPermission() async {
     var status = await Permission.location.request();
     if (status.isGranted) {
@@ -37,6 +38,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     }
   }
 
+  // Start the Compass
   void _startCompass() {
     FlutterCompass.events!.listen((CompassEvent event) {
       setState(() {
@@ -45,6 +47,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     });
   }
 
+  // Update the Countdown Timer
   void updateCountdown() {
     setState(() {
       countdown = widget.event.countdownDuration;
@@ -64,6 +67,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     });
   }
 
+  // Permission Denied Dialog
   void showPermissionDeniedDialog() {
     showDialog(
       context: context,
@@ -159,7 +163,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         _direction == null
                             ? const CircularProgressIndicator()
                             : Transform.rotate(
-                          angle: (_direction ?? 0) * (3.14159 / 180),
+                          angle: ((_direction ?? 0) + 0) * (3.14159 / 180), // Rotate to correct direction
                           child: Image.asset(
                             "assets/images/compass_arrow.png",
                             width: MediaQuery.of(context).size.height * 0.25,
