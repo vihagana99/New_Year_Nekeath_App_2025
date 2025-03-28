@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:async'; // Import Timer package
 import '/models/event_model.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   Duration countdown = const Duration();
   double? _direction;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -47,7 +49,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
     setState(() {
       countdown = widget.event.countdownDuration;
     });
-    Future.delayed(const Duration(seconds: 1), updateCountdown);
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (countdown.inSeconds <= 0) {
+        setState(() {
+          countdown = const Duration(seconds: 0); // Stop at 00:00:00
+        });
+        timer.cancel(); // Cancel the timer when countdown hits zero
+      } else {
+        setState(() {
+          countdown -= const Duration(seconds: 1);
+        });
+      }
+    });
   }
 
   void showPermissionDeniedDialog() {
@@ -93,7 +107,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       width: 2,  // Set the width of the border
                     ),
                     color: Colors.white.withOpacity(0.1),  // slightly opaque white
-
                   ),
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -214,7 +227,7 @@ class CountdownCard extends StatelessWidget {
               Text(
                 value.toString().padLeft(2, '0'),
                 style: const TextStyle(
-                  fontSize: 28,
+                  fontSize: 23,
                   fontWeight: FontWeight.bold,
                   color: Colors.redAccent,
                 ),
