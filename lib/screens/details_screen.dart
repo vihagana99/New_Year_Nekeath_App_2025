@@ -18,12 +18,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
   double? _direction;
   Timer? _timer;
   StreamSubscription<CompassEvent>? _compassSubscription;
+  double? _lastDirection;
 
   @override
   void initState() {
     super.initState();
     updateCountdown();
-
     if (widget.event.compassRequired) {
       requestPermission();
     }
@@ -31,7 +31,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   // Request Location Permission
   void requestPermission() async {
-    var status = await Permission.location.request();
+    var status = await Permission.locationWhenInUse.request();
     if (status.isGranted) {
       _startCompass();
     } else if (status.isPermanentlyDenied) {
@@ -45,9 +45,21 @@ class _DetailsScreenState extends State<DetailsScreen> {
   void _startCompass() {
     _compassSubscription = FlutterCompass.events?.listen((CompassEvent? event) {
       if (event == null) return;
-      setState(() {
-        _direction = event.heading;
-      });
+
+      double newDirection = event.heading ?? 0;
+
+      // Normalize Negative Values (Convert -180° to 180° -> 0° to 360°)
+      if (newDirection < 0) {
+        newDirection += 360;
+      }
+
+      // Apply Low-Pass Filter to Reduce Noise
+      if (_lastDirection == null || (newDirection - _lastDirection!).abs() > 2) {
+        setState(() {
+          _direction = newDirection;
+          _lastDirection = newDirection;
+        });
+      }
     });
   }
 
@@ -172,7 +184,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         _direction == null
                             ? const CircularProgressIndicator()
                             : Transform.rotate(
-                          angle: ((_direction ?? 0) * (3.14159 / 180)), // Convert to radians
+                          angle: ((_direction ?? 0) * (-3.14159265359 / 180)), // Convert to radians
                           child: Image.asset(
                             "assets/images/compass_arrow.png",
                             width: MediaQuery.of(context).size.height * 0.25,
