@@ -13,11 +13,8 @@ Welcome to the New Year Nekath Reminder App for 2025! This app is designed to he
 ---
 
 📱 **Screenshots**
-Here’s a sneak peek of the app interface:
 
-![Screenshot 1](path_to_screenshot1)
-![Screenshot 2](path_to_screenshot2)
-![Screenshot 3](path_to_screenshot3)
+<img src="assets/open.png" /><img src="assets/home.png" /><img src="assets/details.png" /><img src="assets/about.png" />
 
 ---
 
@@ -31,12 +28,12 @@ Here’s a sneak peek of the app interface:
   
 🚀 **Try It Now**
 You can download the app here:
-- [New Year Mobile App - APK Download](link_to_apk)
+- [New Year Mobile App - APK Download]([link_to_ap](https://drive.google.com/file/d/1qnpam2-DI3DC_JjE6PoU9lLjel6GaNuH/view?usp=drive_link))
 
 ---
 
 👨‍💻 **Author**
 - **Vihagana99**  
-  [GitHub Profile](link_to_github)
+  [GitHub Profile]([link_to_github](https://github.com/vihagana99))
 
 ---
