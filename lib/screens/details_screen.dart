@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'dart:async'; // Import Timer package
+import 'dart:async';
 import '/models/event_model.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -29,31 +29,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
     }
   }
 
-  // Request Location Permission
   void requestPermission() async {
     var status = await Permission.locationWhenInUse.request();
     if (status.isGranted) {
       _startCompass();
     } else if (status.isPermanentlyDenied) {
-      openAppSettings(); // Open settings if permanently denied
+      openAppSettings();
     } else {
       showPermissionDeniedDialog();
     }
   }
 
-  // Start the Compass
   void _startCompass() {
     _compassSubscription = FlutterCompass.events?.listen((CompassEvent? event) {
       if (event == null) return;
 
       double newDirection = event.heading ?? 0;
-
-      // Normalize Negative Values (Convert -180° to 180° -> 0° to 360°)
       if (newDirection < 0) {
         newDirection += 360;
       }
 
-      // Apply Low-Pass Filter to Reduce Noise
       if (_lastDirection == null || (newDirection - _lastDirection!).abs() > 2) {
         setState(() {
           _direction = newDirection;
@@ -63,7 +58,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     });
   }
 
-  // Update the Countdown Timer
   void updateCountdown() {
     setState(() {
       countdown = widget.event.countdownDuration;
@@ -71,17 +65,21 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
+
       if (countdown.inSeconds <= 0) {
+        setState(() {
+          countdown = Duration.zero;
+        });
         timer.cancel();
         return;
       }
+
       setState(() {
         countdown -= const Duration(seconds: 1);
       });
     });
   }
 
-  // Permission Denied Dialog
   void showPermissionDeniedDialog() {
     showDialog(
       context: context,
@@ -115,7 +113,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background Image
           Image.asset(
             "assets/images/bg_image_details.jpeg",
             fit: BoxFit.cover,
@@ -128,10 +125,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.black, // Border color
-                      width: 2, // Border width
+                      color: Colors.black,
+                      width: 2,
                     ),
-                    color: Colors.white.withOpacity(0.1), // Slightly opaque white
+                    color: Colors.white.withOpacity(0.1),
                   ),
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -157,7 +154,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Row(
+                      // 🔔 Countdown or Time's Up message
+                      countdown == Duration.zero
+                          ? Text(
+                        "🎉 Time's Up!",
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      )
+                          : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CountdownCard(label: "Days", value: countdown.inDays),
@@ -184,7 +191,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         _direction == null
                             ? const CircularProgressIndicator()
                             : Transform.rotate(
-                          angle: ((_direction ?? 0) * (-3.14159265359 / 180)), // Convert to radians
+                          angle: ((_direction ?? 0) * (-3.14159265359 / 180)),
                           child: Image.asset(
                             "assets/images/compass_arrow.png",
                             width: MediaQuery.of(context).size.height * 0.25,
@@ -228,7 +235,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 }
 
-// CountdownCard class definition
+// 📦 CountdownCard
 class CountdownCard extends StatelessWidget {
   final String label;
   final int value;
