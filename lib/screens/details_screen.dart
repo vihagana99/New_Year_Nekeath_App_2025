@@ -180,7 +180,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           widget.event.description,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),

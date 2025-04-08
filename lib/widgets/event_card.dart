@@ -19,7 +19,6 @@ class _EventCardState extends State<EventCard> {
   void initState() {
     super.initState();
     _countdown = widget.event.targetDate.difference(DateTime.now());
-    // Update countdown every second
     _timer = Timer.periodic(const Duration(seconds: 1), _updateCountdown);
   }
 
@@ -28,14 +27,14 @@ class _EventCardState extends State<EventCard> {
       _countdown = widget.event.targetDate.difference(DateTime.now());
       if (_countdown.isNegative) {
         _countdown = Duration.zero;
-        timer.cancel(); // Stop the timer if the event is in the past
+        timer.cancel();
       }
     });
   }
 
   @override
   void dispose() {
-    _timer.cancel(); // Cancel the timer when the widget is disposed
+    _timer.cancel();
     super.dispose();
   }
 
@@ -43,54 +42,58 @@ class _EventCardState extends State<EventCard> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double imageSize = constraints.maxWidth > 600 ? 120 : 90;
-        double fontSize = constraints.maxWidth > 600 ? 22 : 18;
+        double imageSize = constraints.maxWidth > 600 ? 160 : 90;
+        double fontSize = constraints.maxWidth > 600 ? 20 : 18;
 
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 1),
-          elevation: 5,
-          color: Colors.transparent,
+          margin: const EdgeInsets.all(5),
+          elevation: 6,
+          color: Colors.white.withOpacity(0.1),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(5),
-            title: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               children: [
-                Text(
-                  widget.event.title,
-                  style: TextStyle(
-                      fontSize: fontSize,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    widget.event.image,
+                    width: imageSize,
+                    height: imageSize,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 6,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    CountdownCard(label: "Days", value: _countdown.inDays),
-                    CountdownCard(
-                        label: "Hours", value: _countdown.inHours % 24),
-                    CountdownCard(
-                        label: "Minutes", value: _countdown.inMinutes % 60),
-                    CountdownCard(
-                        label: "Seconds", value: _countdown.inSeconds % 60),
-                  ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.event.title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 6,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          CountdownCard(label: "Days", value: _countdown.inDays),
+                          CountdownCard(label: "Hours", value: _countdown.inHours % 24),
+                          CountdownCard(label: "Minutes", value: _countdown.inMinutes % 60),
+                          CountdownCard(label: "Seconds", value: _countdown.inSeconds % 60),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                widget.event.image,
-                width: imageSize,
-                height: imageSize,
-                fit: BoxFit.cover,
-              ),
             ),
           ),
         );
@@ -111,36 +114,33 @@ class CountdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 1.0),
-      child: Card(
-        elevation: 5,
-        color: const Color.fromARGB(255, 231, 219, 167),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 1.0),
-          child: Column(
-            children: [
-              Text(
-                value.toString().padLeft(2, '0'),
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.redAccent,
-                ),
+    return Card(
+      elevation: 4,
+      color: const Color.fromARGB(255, 231, 219, 167),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+        child: Column(
+          children: [
+            Text(
+              value.toString().padLeft(2, '0'),
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: Colors.redAccent,
               ),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple.shade900,
-                ),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple.shade900,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
