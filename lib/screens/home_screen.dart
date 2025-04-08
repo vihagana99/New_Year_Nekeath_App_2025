@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
+import 'package:permission_handler/permission_handler.dart';
 import '/models/event_model.dart';
 import '/screens/about_screen.dart';
 import '/screens/details_screen.dart';
@@ -15,38 +15,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Event> upcomingEvents = []; // List to store upcoming events
-  List<Event> passedEvents = []; // List to store passed events
+  List<Event> upcomingEvents = [];
+  List<Event> passedEvents = [];
 
   @override
   void initState() {
     super.initState();
-    loadEvents(); // Load events from the JSON file when the screen is loaded
-    checkAndRequestPermission(); // Request location permission as soon as the home screen is loaded
+    loadEvents();
+    checkAndRequestPermission();
   }
 
-  // Check and request location permission
   Future<void> checkAndRequestPermission() async {
     var status = await Permission.location.status;
     if (status.isGranted) {
-      print("Location permission granted"); // If permission is granted, print a message
+      print("Location permission granted");
     } else if (status.isDenied) {
       var requestStatus = await Permission.location.request();
       if (requestStatus.isGranted) {
-        print("Location permission granted"); // If permission is granted after request, print a message
+        print("Location permission granted");
       } else {
         print("Location permission denied");
-        // Optionally, show a dialog explaining why the permission is needed
         showPermissionDeniedDialog();
       }
     } else if (status.isPermanentlyDenied) {
       print("Location permission permanently denied");
-      // If the permission is permanently denied, open app settings to manually enable permission
       openAppSettings();
     }
   }
 
-  // Function to show a dialog when location permission is denied
   void showPermissionDeniedDialog() {
     showDialog(
       context: context,
@@ -68,23 +64,41 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Load events and filter them by target date
   Future<void> loadEvents() async {
     String jsonString = await rootBundle.loadString('assets/events.json');
     List<dynamic> jsonList = json.decode(jsonString);
 
-    // Filter out events whose target date has already passed
     upcomingEvents = jsonList
         .map((json) => Event.fromJson(json))
-        .where((event) => event.targetDate.isAfter(DateTime.now())) // Filter upcoming events
+        .where((event) => event.targetDate.isAfter(DateTime.now()))
         .toList();
 
     passedEvents = jsonList
         .map((json) => Event.fromJson(json))
-        .where((event) => event.targetDate.isBefore(DateTime.now())) // Filter passed events
+        .where((event) => event.targetDate.isBefore(DateTime.now()))
         .toList();
 
-    setState(() {}); // Update the UI after loading and filtering the events
+    setState(() {});
+  }
+
+  int getCrossAxisCount(BoxConstraints constraints) {
+    if (constraints.maxWidth > 900) {
+      return 3;
+    } else if (constraints.maxWidth > 600) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+
+  double getChildAspectRatio(BoxConstraints constraints) {
+    if (constraints.maxWidth > 900) {
+      return 1.5;
+    } else if (constraints.maxWidth > 600) {
+      return 2.0;
+    } else {
+      return 2.5;
+    }
   }
 
   @override
@@ -106,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AboutScreen()), // Navigate to the AboutScreen
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
               );
             },
           ),
@@ -114,22 +128,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          double width = constraints.maxWidth;
-          bool isLargeScreen = width > 600; // Check if the screen is large
+          int crossAxisCount = getCrossAxisCount(constraints);
+          double aspectRatio = getChildAspectRatio(constraints);
 
           return Stack(
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  "assets/images/bg_image_home.jpeg", // Background image
+                  "assets/images/bg_image_home.jpeg",
                   fit: BoxFit.cover,
                 ),
               ),
-              upcomingEvents.isEmpty
-                  ? const Center(child: CircularProgressIndicator()) // Show a loading indicator if no events are loaded
+              upcomingEvents.isEmpty && passedEvents.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
                   : ListView(
                 children: [
-                  // Upcoming Events Section
                   if (upcomingEvents.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -137,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Upcoming Events', // Title for upcoming events
+                            'Upcoming Events',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -150,10 +163,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.all(8.0),
                             gridDelegate:
                             SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: isLargeScreen ? 3 : 1, // Adjust number of columns based on screen size
+                              crossAxisCount: crossAxisCount,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
-                              childAspectRatio: isLargeScreen ? 1.5 : 2.5,
+                              childAspectRatio: aspectRatio,
                             ),
                             itemCount: upcomingEvents.length,
                             itemBuilder: (context, index) {
@@ -163,18 +176,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          DetailsScreen(event: upcomingEvents[index]), // Navigate to DetailsScreen on tap
+                                          DetailsScreen(event: upcomingEvents[index]),
                                     ),
                                   );
                                 },
-                                child: EventCard(event: upcomingEvents[index]), // Display each event in a card
+                                child: EventCard(event: upcomingEvents[index]),
                               );
                             },
                           ),
                         ],
                       ),
                     ),
-                  // Passed Events Section (Optional)
                   if (passedEvents.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -182,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Past Events', // Title for past events
+                            'Past Events',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -195,10 +207,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.all(8.0),
                             gridDelegate:
                             SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: isLargeScreen ? 3 : 1, // Adjust number of columns based on screen size
+                              crossAxisCount: crossAxisCount,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
-                              childAspectRatio: isLargeScreen ? 1.5 : 2.5,
+                              childAspectRatio: aspectRatio,
                             ),
                             itemCount: passedEvents.length,
                             itemBuilder: (context, index) {
@@ -208,11 +220,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          DetailsScreen(event: passedEvents[index]), // Navigate to DetailsScreen on tap
+                                          DetailsScreen(event: passedEvents[index]),
                                     ),
                                   );
                                 },
-                                child: EventCard(event: passedEvents[index]), // Display each event in a card
+                                child: EventCard(event: passedEvents[index]),
                               );
                             },
                           ),
